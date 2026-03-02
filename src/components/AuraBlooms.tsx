@@ -1,26 +1,19 @@
 "use client";
 // ============================================================
-// Aura Blooms — Main App Orchestrator
-// Manages screen navigation and global state
+// Aura Blooms — Main App Orchestrator (3-Page Flow)
 // ============================================================
 
 import { useState, useCallback } from "react";
-import type {
-  AppScreen,
-  EnvironmentData,
-  LightAnalysis,
-  SurvivalPrediction,
-} from "@/lib/types";
+import type { EnvironmentData, LightAnalysis, SurvivalPrediction } from "@/lib/types";
 import { generatePrediction } from "@/lib/botanicalEngine";
 
-import LandingScreen from "./screens/LandingScreen";
-import ContextScreen from "./screens/ContextScreen";
-import ScanScreen from "./screens/ScanScreen";
-import GhostScreen from "./screens/GhostScreen";
-import SimulationScreen from "./screens/SimulationScreen";
-import ResultsScreen from "./screens/ResultsScreen";
+import SetupPage from "./screens/SetupPage";
+import AnalysisPage from "./screens/AnalysisPage";
+import ReportPage from "./screens/ReportPage";
 
-const DEFAULT_ENVIRONMENT: EnvironmentData = {
+type Page = "setup" | "analysis" | "report";
+
+const DEFAULT_ENV: EnvironmentData = {
   gps: null,
   windowOrientation: "Unknown",
   distanceToWindow: 2,
@@ -29,34 +22,21 @@ const DEFAULT_ENVIRONMENT: EnvironmentData = {
 };
 
 export default function AuraBlooms() {
-  const [screen, setScreen] = useState<AppScreen>("context");
-  const [environment, setEnvironment] = useState<EnvironmentData>(DEFAULT_ENVIRONMENT);
+  const [page, setPage] = useState<Page>("setup");
+  const [environment, setEnvironment] = useState<EnvironmentData>(DEFAULT_ENV);
   const [lightAnalysis, setLightAnalysis] = useState<LightAnalysis | null>(null);
   const [prediction, setPrediction] = useState<SurvivalPrediction | null>(null);
 
-  // ── Screen 1 → 2: Context complete ──────────────────────
-  const handleContextComplete = useCallback(
-    (data: Pick<EnvironmentData, "gps" | "windowOrientation" | "distanceToWindow">) => {
-      setEnvironment((prev) => ({ ...prev, ...data }));
-      setScreen("scan");
-    },
-    []
-  );
+  // Page 1 → 2
+  const handleSetupComplete = useCallback((data: EnvironmentData) => {
+    setEnvironment(data);
+    setPage("analysis");
+  }, []);
 
-  // ── Screen 2 → 3: Scan complete ─────────────────────────
-  const handleScanComplete = useCallback(
-    (plantSpotImage: string | null, lightSourceImage: string | null) => {
-      setEnvironment((prev) => ({ ...prev, plantSpotImage, lightSourceImage }));
-      setScreen("ghost");
-    },
-    []
-  );
-
-  // ── Screen 3 → 4: Analysis complete ─────────────────────
+  // Page 2 → 3
   const handleAnalysisComplete = useCallback(
     (analysis: LightAnalysis) => {
       setLightAnalysis(analysis);
-      // Generate the full 24-month prediction
       const pred = generatePrediction(
         analysis,
         environment.gps,
@@ -64,68 +44,41 @@ export default function AuraBlooms() {
         environment.distanceToWindow
       );
       setPrediction(pred);
-      setScreen("simulation");
+      setPage("report");
     },
     [environment]
   );
 
-  // ── Screen 4 → 5: Simulation complete ───────────────────
-  const handleSimulationComplete = useCallback(() => {
-    setScreen("results");
-  }, []);
-
-  // ── Restart ──────────────────────────────────────────────
+  // Restart
   const handleRestart = useCallback(() => {
-    setEnvironment(DEFAULT_ENVIRONMENT);
+    setEnvironment(DEFAULT_ENV);
     setLightAnalysis(null);
     setPrediction(null);
-    setScreen("context");
+    setPage("setup");
   }, []);
 
-  // ── Render ───────────────────────────────────────────────
-  switch (screen) {
-    case "context":
-      return <ContextScreen onComplete={handleContextComplete} />;
+  switch (page) {
+    case "setup":
+      return <SetupPage onComplete={handleSetupComplete} />;
 
-    case "scan":
+    case "analysis":
       return (
-        <ScanScreen
-          onComplete={handleScanComplete}
-          onBack={() => setScreen("context")}
-        />
-      );
-
-    case "ghost":
-      return (
-        <GhostScreen
+        <AnalysisPage
           environment={environment}
-          onAnalysisComplete={handleAnalysisComplete}
-          onBack={() => setScreen("scan")}
+          onComplete={handleAnalysisComplete}
+          onBack={() => setPage("setup")}
         />
       );
 
-    case "simulation":
-      if (!prediction) return null;
-      return (
-        <SimulationScreen
-          prediction={prediction}
-          onComplete={handleSimulationComplete}
-          onBack={() => setScreen("ghost")}
-        />
-      );
-
-    case "results":
+    case "report":
       if (!prediction || !lightAnalysis) return null;
       return (
-        <ResultsScreen
+        <ReportPage
           prediction={prediction}
           lightAnalysis={lightAnalysis}
           environment={environment}
           onRestart={handleRestart}
         />
       );
-
-    default:
-      return <LandingScreen onStart={() => setScreen("context")} />;
   }
 }
