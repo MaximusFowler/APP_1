@@ -1,1 +1,149 @@
 @import "tailwindcss";
+
+
+/* ============================================================
+   Aura Blooms — Global Styles
+   Botanical dark theme with premium green accents
+   ============================================================ */
+
+:root {
+  --color-bg: #0a0f0a;
+  --color-surface: #111a11;
+  --color-border: #1e3a1e;
+  --color-accent: #4ade80;
+  --color-accent-dark: #22c55e;
+  --color-text: #ffffff;
+  --color-text-muted: #6b7280;
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Base reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
+}
+
+/* ── Range Input Styling ─────────────────────────────────── */
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: #1e3a1e;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #4ade80;
+  cursor: pointer;
+  border: 3px solid #0a0f0a;
+  box-shadow: 0 0 0 2px #4ade80;
+  transition: box-shadow 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.3);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #4ade80;
+  cursor: pointer;
+  border: 3px solid #0a0f0a;
+  box-shadow: 0 0 0 2px #4ade80;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0f0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e3a1e;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4ade80;
+}
+
+/* ── Animations ──────────────────────────────────────────── */
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ── Focus styles ────────────────────────────────────────── */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid #4ade80;
+  outline-offset: 2px;
+}
+
+/* ── Video element ───────────────────────────────────────── */
+
+video {
+  display: block;
+}

@@ -1,10 +1,10 @@
-# Active Context: Next.js Starter Template
+# Active Context: Aura Blooms — Plant Survival Simulator
 
 ## Current State
 
-**Template Status**: ✅ Ready for development
+**App Status**: ✅ Fully built and production-ready
 
-The template is a clean Next.js 16 starter with TypeScript and Tailwind CSS 4. It's ready for AI-assisted expansion to build any type of application.
+Aura Blooms is a complete mobile-first web application that uses AI (Gemini Vision) to analyse a room's physical environment and predict plant survival over a 2-year timeline.
 
 ## Recently Completed
 
@@ -14,74 +14,64 @@ The template is a clean Next.js 16 starter with TypeScript and Tailwind CSS 4. I
 - [x] ESLint configuration
 - [x] Memory bank documentation
 - [x] Recipe system for common features
+- [x] **Aura Blooms full app implementation**
+  - [x] Botanical Logic Engine with Inverse Square Law, seasonal adjustments, orientation multipliers
+  - [x] 24-month plant morphology simulation (growth stages, symptoms, CSS transforms)
+  - [x] Gemini 1.5 Flash API integration for visual light analysis
+  - [x] Screen 1: Context (GPS + compass + distance slider)
+  - [x] Screen 2: Camera scan with overlay guides (plant spot + light source)
+  - [x] Screen 3: AR-lite Ghost preview with animated SVG plant
+  - [x] Screen 4: 24-month simulation with interactive timeline slider
+  - [x] Screen 5: Results with survival score ring, rescue kit, alternative plant recommendations
+  - [x] Botanical dark theme (deep forest green + white)
+  - [x] Zero TypeScript errors, zero lint errors, production build passes
 
 ## Current Structure
 
 | File/Directory | Purpose | Status |
 |----------------|---------|--------|
-| `src/app/page.tsx` | Home page | ✅ Ready |
-| `src/app/layout.tsx` | Root layout | ✅ Ready |
-| `src/app/globals.css` | Global styles | ✅ Ready |
+| `src/app/page.tsx` | Root page → AuraBlooms component | ✅ Ready |
+| `src/app/layout.tsx` | Root layout with Aura Blooms metadata | ✅ Ready |
+| `src/app/globals.css` | Botanical dark theme + range input styles | ✅ Ready |
+| `src/app/api/analyze-light/route.ts` | Gemini Vision API route | ✅ Ready |
+| `src/lib/types.ts` | All TypeScript types | ✅ Ready |
+| `src/lib/botanicalEngine.ts` | Core IP: light physics + growth simulation | ✅ Ready |
+| `src/components/AuraBlooms.tsx` | Main app orchestrator / state manager | ✅ Ready |
+| `src/components/screens/LandingScreen.tsx` | Splash screen | ✅ Ready |
+| `src/components/screens/ContextScreen.tsx` | GPS + orientation + distance | ✅ Ready |
+| `src/components/screens/ScanScreen.tsx` | Camera capture interface | ✅ Ready |
+| `src/components/screens/GhostScreen.tsx` | AR-lite ghost + AI analysis | ✅ Ready |
+| `src/components/screens/SimulationScreen.tsx` | 24-month slider simulation | ✅ Ready |
+| `src/components/screens/ResultsScreen.tsx` | Survival report + monetisation | ✅ Ready |
 | `.kilocode/` | AI context & recipes | ✅ Ready |
 
-## Current Focus
+## Key Technical Features
 
-The template is ready. Next steps depend on user requirements:
+### Botanical Logic Engine
+- **Inverse Square Law**: `I = I₀ / d²` — light attenuates with distance
+- **Seasonal Multipliers**: Northern/Southern hemisphere monthly light factors
+- **Orientation Multipliers**: N=0.30 → S=1.0 window direction factors
+- **Growth Zones**: Optimal (≥65), Sub-optimal (35–64), Death Zone (<35)
+- **Morphology Simulation**: CSS scale, hue-rotate, saturate, brightness per month
 
-1. What type of application to build
-2. What features are needed
-3. Design/branding preferences
+### API Integration
+- Gemini 1.5 Flash for visual light analysis
+- Graceful fallback mock when `GEMINI_API_KEY` not set
+- Returns structured `LightAnalysis` with score, level, observations
 
-## Quick Start Guide
+### Monetisation
+- Rescue Kit (grow light) shown when survival score < 50%
+- Alternative plant recommendation (Snake Plant, ZZ Plant, Pothos)
 
-### To add a new page:
+## Environment Variables
 
-Create a file at `src/app/[route]/page.tsx`:
-```tsx
-export default function NewPage() {
-  return <div>New page content</div>;
-}
-```
-
-### To add components:
-
-Create `src/components/` directory and add components:
-```tsx
-// src/components/ui/Button.tsx
-export function Button({ children }: { children: React.ReactNode }) {
-  return <button className="px-4 py-2 bg-blue-600 text-white rounded">{children}</button>;
-}
-```
-
-### To add a database:
-
-Follow `.kilocode/recipes/add-database.md`
-
-### To add API routes:
-
-Create `src/app/api/[route]/route.ts`:
-```tsx
-import { NextResponse } from "next/server";
-
-export async function GET() {
-  return NextResponse.json({ message: "Hello" });
-}
-```
-
-## Available Recipes
-
-| Recipe | File | Use Case |
-|--------|------|----------|
-| Add Database | `.kilocode/recipes/add-database.md` | Data persistence with Drizzle + SQLite |
-
-## Pending Improvements
-
-- [ ] Add more recipes (auth, email, etc.)
-- [ ] Add example components
-- [ ] Add testing setup recipe
+| Variable | Purpose | Required |
+|----------|---------|----------|
+| `GEMINI_API_KEY` | Gemini Vision API key | Optional (mock used if absent) |
 
 ## Session History
 
 | Date | Changes |
 |------|---------|
 | Initial | Template created with base setup |
+| 2026-03-02 | Full Aura Blooms app built — 5 screens, botanical engine, Gemini API, monetisation |
